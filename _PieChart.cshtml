@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "PIE chart";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+@using (Html.BeginForm("BarChart", "Home", FormMethod.Get))
+{
+    <div class="row">
+        <select id="TimeInterval" class="pull-left">
+            <option value="1">1 Month</option>
+            <option value="2">2 Months</option>
+            <option value="3">3 Months</option>
+        </select>
+        <input type="submit" value="Select" />
+    </div>
+}
+
+<div class="row">
+
+    <div style="width:50%;height:50%;font-family: Corbel; font-size: small ;text-align:center " ">
+        <canvas id="pieChart" style="padding: 0;margin: auto;display: block; "> </canvas>
+    </div>
+</div>
+<script type="text/javascript">
+    // This is our actual script
+    $(document).ready(function(){
+        $('#TimeInterval').change(function () {
+
+        });
+    });
+</script>
+<script>
+    $.ajax({
+        type: "POST",
+        url: "/Home/BarChart",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (chData) {
+            var aData = chData;
+            var aLabels = aData[0];
+            var aDatasets1 = aData[1];
+            var dataT = {
+                labels: aLabels,
+                datasets: [{
+                    // label: aData[0],
+                    data: aDatasets1,
+                    fill: false,
+                    backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"],
+                    borderColor: ["rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+                    borderWidth: 1
+                }]
+            };
+            var optionsT = {
+                title: {
+                    display: true,
+                    text: "ProductWise Sales Count"
+                },
+                responsive: true,
+                maintainAspectRatio: true
+            };
+            var ctx = $("#pieChart").get(0).getContext("2d");
+
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: dataT,
+                options: optionsT
+            });
+
+        }
+    });
+</script>
